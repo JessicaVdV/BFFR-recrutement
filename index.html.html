@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demande Ouverture de Poste - Basic-Fit</title>
+<style>
+:root{
+  --or:#FE7000;--or-d:#C85800;--or-l:#FFF4EC;--or-m:#FFD0A0;
+  --bg:#F5F4F2;--w:#FFFFFF;--tx:#272727;--tm:#555;--tl:#888;
+  --bd:#DDDBD7;--red:#C0392B;--r:5px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;}
+
+/* topbar */
+.topbar{background:var(--w);border-bottom:3px solid var(--or);display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:54px;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.topbar img{height:28px;}
+.topbar-mid{font-weight:700;color:var(--tm);font-size:15px;text-transform:uppercase;letter-spacing:.3px;}
+.topbar-badge{background:var(--or-l);color:var(--or-d);border:1px solid var(--or-m);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;}
+
+/* progress tabs */
+.prog{background:var(--w);border-bottom:1px solid var(--bd);padding:0 28px;}
+.prog-inner{display:flex;max-width:840px;margin:0 auto;}
+.ptab{flex:1;padding:11px 6px 9px;display:flex;align-items:center;gap:7px;cursor:pointer;border-bottom:3px solid transparent;}
+.ptab:hover{background:var(--or-l);}
+.ptab.act{border-bottom-color:var(--or);}
+.ptab.done{border-bottom-color:var(--or-m);}
+.pnum{width:22px;height:22px;border-radius:50%;background:var(--bg);border:2px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--tl);flex-shrink:0;}
+.ptab.act .pnum{background:var(--or);border-color:var(--or);color:#fff;}
+.ptab.done .pnum{background:var(--or-m);border-color:var(--or-m);color:var(--or-d);}
+.plbl{font-size:11px;font-weight:700;color:var(--tl);line-height:1.3;}
+.ptab.act .plbl{color:var(--or-d);}
+
+/* main */
+.main{max-width:840px;margin:0 auto;padding:24px 14px 86px;}
+
+/* cards */
+.card{background:var(--w);border-radius:var(--r);box-shadow:0 1px 6px rgba(0,0,0,.07);border:1px solid var(--bd);display:none;margin-bottom:8px;}
+.card.act{display:block;}
+.ch{background:var(--or);padding:16px 24px;border-radius:var(--r) var(--r) 0 0;display:flex;align-items:center;gap:12px;}
+.ch-n{font-size:38px;font-weight:900;color:rgba(255,255,255,.2);line-height:1;font-family:Arial,sans-serif;}
+.ch-t{font-size:18px;font-weight:700;color:#fff;text-transform:uppercase;}
+.ch-s{font-size:12px;color:rgba(255,255,255,.75);margin-top:2px;}
+.cb{padding:24px 24px 20px;}
+
+/* form grid */
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:16px 20px;}
+.f{display:flex;flex-direction:column;gap:5px;}
+.f.full{grid-column:1/-1;}
+.lbl{font-size:11.5px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:.3px;}
+.req{color:var(--or);}
+input[type=text],input[type=date],input[type=number],select,textarea{
+  border:1.5px solid var(--bd);border-radius:var(--r);padding:9px 11px;
+  font-family:Arial,sans-serif;font-size:14px;color:var(--tx);background:var(--w);width:100%;
+}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--or);outline-offset:-1px;border-color:var(--or);}
+input.err,select.err,textarea.err{border-color:var(--red);outline:2px solid rgba(192,57,43,.3);outline-offset:-1px;}
+textarea{resize:vertical;min-height:76px;}
+select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7'%3E%3Cpath d='M0 0l5 7 5-7z' fill='%23888'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;}
+.hint{font-size:11px;color:var(--tl);}
+.errmsg{font-size:11px;color:var(--red);display:none;}
+.f.herr .errmsg{display:block;}
+
+/* option buttons */
+.og{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+.ob{display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border:1.5px solid var(--bd);border-radius:var(--r);cursor:pointer;font-size:13px;font-weight:500;background:var(--w);color:var(--tm);user-select:none;}
+.ob:hover{border-color:var(--or);background:var(--or-l);color:var(--or-d);}
+.ob.sel{border-color:var(--or);background:var(--or-l);color:var(--or-d);font-weight:700;}
+/* checkbox icon */
+.ci{width:15px;height:15px;border:2px solid #bbb;border-radius:3px;flex-shrink:0;display:inline-block;position:relative;}
+.ob.sel .ci{background:var(--or);border-color:var(--or);}
+.ob.sel .ci::after{content:'';position:absolute;left:2px;top:-1px;width:7px;height:5px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg);}
+/* radio icon */
+.ri{width:15px;height:15px;border:2px solid #bbb;border-radius:50%;flex-shrink:0;display:inline-block;position:relative;}
+.ob.sel .ri{border-color:var(--or);}
+.ob.sel .ri::after{content:'';position:absolute;top:2px;left:2px;width:7px;height:7px;border-radius:50%;background:var(--or);}
+
+/* section helpers */
+.div{border:0;border-top:1px solid var(--bd);margin:18px 0;}
+.slbl{font-size:13px;font-weight:700;text-transform:uppercase;color:var(--or-d);letter-spacing:.3px;margin-bottom:12px;}
+
+/* motif table */
+.mt{width:100%;border-collapse:collapse;border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;}
+.mt th{background:var(--or);color:#fff;font-size:11.5px;font-weight:700;padding:9px 12px;text-align:left;}
+.mt th:first-child{width:40px;}
+.mr{cursor:pointer;}
+.mr td{padding:10px 12px;border-bottom:1px solid var(--bd);vertical-align:top;font-size:13px;}
+.mr td:first-child{text-align:center;width:40px;}
+.mr:last-child td{border-bottom:none;}
+.mr:hover td{background:var(--or-l);}
+.mr.sel td{background:var(--or-l);}
+.mn{font-weight:700;color:var(--tx);margin-bottom:2px;}
+.md{color:var(--tl);font-size:12px;}
+.mc{font-size:12px;color:var(--tm);width:190px;}
+.mrad{width:15px;height:15px;border:2px solid #bbb;border-radius:50%;display:inline-block;position:relative;}
+.mr.sel .mrad{border-color:var(--or);}
+.mr.sel .mrad::after{content:'';position:absolute;top:2px;left:2px;width:7px;height:7px;border-radius:50%;background:var(--or);}
+
+/* panels */
+.cp{display:none;}
+.cp.vis{display:block;}
+
+/* info / warn boxes */
+.ibox{background:var(--or-l);border-left:4px solid var(--or);padding:10px 14px;font-size:13px;color:var(--tm);margin:12px 0;}
+.wbox{background:#fffbf0;border-left:4px solid #f9a825;padding:10px 14px;font-size:13px;color:#6b5000;margin:12px 0;}
+
+/* bottom nav */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:var(--w);border-top:2px solid var(--or);display:flex;justify-content:space-between;align-items:center;padding:12px 28px;box-shadow:0 -2px 12px rgba(0,0,0,.08);z-index:50;}
+.btn{font-family:Arial,sans-serif;font-size:14px;font-weight:700;padding:10px 22px;border-radius:var(--r);border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+.btn-p{background:var(--or);color:#fff;}
+.btn-p:hover{background:var(--or-d);}
+.btn-g{background:transparent;color:var(--tl);border:1.5px solid var(--bd);}
+.btn-g:hover{border-color:var(--or);color:var(--or);}
+.btn-s{background:var(--bg);color:var(--tm);border:1.5px solid var(--bd);}
+.btn-g:disabled,.btn-p:disabled{opacity:.35;cursor:not-allowed;}
+.nlbl{font-size:13px;color:var(--tl);font-weight:600;}
+
+/* summary */
+.sgrid{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;}
+.ssec{grid-column:1/-1;background:var(--or);color:#fff;font-weight:700;font-size:12.5px;padding:7px 12px;text-transform:uppercase;letter-spacing:.3px;}
+.sk{background:var(--bg);padding:8px 12px;font-size:11.5px;font-weight:700;color:var(--tl);border-bottom:1px solid var(--bd);text-transform:uppercase;}
+.sv{background:#fff;padding:8px 12px;font-size:13px;color:var(--tx);border-bottom:1px solid var(--bd);border-left:1px solid var(--bd);word-break:break-word;}
+.tag{display:inline-block;background:var(--or-l);color:var(--or-d);border:1px solid var(--or-m);border-radius:20px;padding:1px 8px;font-size:12px;font-weight:700;}
+
+@media print{
+  .topbar,.prog,.bnav{display:none!important;}
+  body{background:#fff;}
+  .main{padding:0;max-width:100%;}
+  .card{display:block!important;box-shadow:none;margin-bottom:12px;border:none;}
+  .ch,.ssec{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+}
+@media(max-width:580px){
+  .fg{grid-template-columns:1fr;}
+  .topbar-mid{display:none;}
+  .cb{padding:16px 14px;}
+  .bnav{padding:10px 14px;}
+  .plbl{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <img src="data:image/jpeg;base64,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" alt="Basic-Fit">
+  <div class="topbar-mid">Demande d'Ouverture de Poste</div>
+  <div class="topbar-badge">Confidentiel RH</div>
+</div>
+
+<div class="prog">
+  <div class="prog-inner">
+    <div class="ptab act" id="tab0"><div class="pnum">1</div><div class="plbl">Infos<br>g&eacute;n&eacute;rales</div></div>
+    <div class="ptab" id="tab1"><div class="pnum">2</div><div class="plbl">Poste &agrave;<br>pourvoir</div></div>
+    <div class="ptab" id="tab2"><div class="pnum">3</div><div class="plbl">Motif<br>d'ouverture</div></div>
+    <div class="ptab" id="tab3"><div class="pnum">4</div><div class="plbl">Type de<br>contrat</div></div>
+    <div class="ptab" id="tab4"><div class="pnum">5</div><div class="plbl">Diffusion &amp;<br>R&eacute;sum&eacute;</div></div>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- STEP 1 -->
+<div class="card act" id="s0">
+  <div class="ch"><div class="ch-n">01</div><div><div class="ch-t">Informations G&eacute;n&eacute;rales</div><div class="ch-s">Identifiez le demandeur et le contexte</div></div></div>
+  <div class="cb">
+    <div class="fg">
+      <div class="f" id="f-responsable">
+        <div class="lbl">Responsable demandeur <span class="req">*</span></div>
+        <input type="text" id="responsable" placeholder="Pr&eacute;nom NOM">
+        <div class="errmsg">Ce champ est obligatoire</div>
+      </div>
+      <div class="f" id="f-poste-dem">
+        <div class="lbl">Poste du demandeur <span class="req">*</span></div>
+        <input type="text" id="poste-dem" placeholder="ex. Club Manager">
+        <div class="errmsg">Ce champ est obligatoire</div>
+      </div>
+      <div class="f" id="f-regional">
+        <div class="lbl">Responsable R&eacute;gional(e) <span class="req">*</span></div>
+        <input type="text" id="regional" placeholder="Pr&eacute;nom NOM">
+        <div class="errmsg">Ce champ est obligatoire</div>
+      </div>
+      <div class="f" id="f-date-dem">
+        <div class="lbl">Date de la demande <span class="req">*</span></div>
+        <input type="date" id="date-dem">
+        <div class="errmsg">Ce champ est obligatoire</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 2 -->
+<div class="card" id="s1">
+  <div class="ch"><div class="ch-n">02</div><div><div class="ch-t">Poste &agrave; Pourvoir</div><div class="ch-s">D&eacute;crivez le poste et le contexte</div></div></div>
+  <div class="cb">
+    <div class="fg">
+      <div class="f full" id="f-intitule">
+        <div class="lbl">Intitul&eacute; du poste <span class="req">*</span></div>
+        <input type="text" id="intitule" placeholder="Titre exact tel qu'il figurera sur le contrat">
+        <div class="hint">Ce titre figurera exactement sur le contrat de travail</div>
+        <div class="errmsg">Ce champ est obligatoire</div>
+      </div>
+      <div class="f" id="f-club">
+        <div class="lbl">Club / Site <span class="req">*</span></div>
+        <input type="text" id="club" placeholder="ex. Club Paris 8">
+        <div class="errmsg">Ce champ est obligatoire</div>
+      </div>
+      <div class="f" id="f-centre-cout">
+        <div class="lbl">Centre de co&ucirc;t <span class="req">*</span></div>
+        <input type="text" id="centre-cout" placeholder="ex. CC-2201">
+        <div class="errmsg">Ce champ est obligatoire</div>
+      </div>
+      <div class="f">
+        <div class="lbl">Service / D&eacute;partement</div>
+        <input type="text" id="service" placeholder="ex. Cours collectifs">
+      </div>
+      <div class="f" id="f-nb-postes">
+        <div class="lbl">Nombre de postes <span class="req">*</span></div>
+        <input type="number" id="nb-postes" value="1" min="1" max="99">
+        <div class="errmsg">Ce champ est obligatoire</div>
+      </div>
+      <div class="f" id="f-date-prise">
+        <div class="lbl">Date de prise de poste <span class="req">*</span></div>
+        <input type="date" id="date-prise">
+        <div class="errmsg">Ce champ est obligatoire</div>
+      </div>
+      <div class="f">
+        <div class="lbl">Deadline recrutement</div>
+        <input type="date" id="deadline">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 3 -->
+<div class="card" id="s2">
+  <div class="ch"><div class="ch-n">03</div><div><div class="ch-t">Motif d'Ouverture</div><div class="ch-s">Pr&eacute;cisez la raison du recrutement</div></div></div>
+  <div class="cb">
+    <div class="f" id="f-motif-ouv">
+      <div class="lbl">Nature de l'ouverture <span class="req">*</span></div>
+      <div class="og" id="og-motif-ouv">
+        <div class="ob" id="mo-creation"><span class="ci"></span> Cr&eacute;ation de poste</div>
+        <div class="ob" id="mo-remplacement"><span class="ci"></span> Remplacement</div>
+        <div class="ob" id="mo-surcroit"><span class="ci"></span> Surcro&icirc;t temporaire d'activit&eacute;</div>
+        <div class="ob" id="mo-reorg"><span class="ci"></span> R&eacute;organisation interne</div>
+      </div>
+      <div class="errmsg" id="e-motif-ouv">Veuillez s&eacute;lectionner un motif</div>
+    </div>
+    <div class="cp" id="p-remp-warn">
+      <div class="wbox"><b>Remplacement s&eacute;lectionn&eacute; :</b> Pr&eacute;cisez le motif l&eacute;gal CDD &agrave; l'&eacute;tape 4, le nom et le motif d'absence du salari&eacute; remplac&eacute;.</div>
+    </div>
+    <hr class="div">
+    <div class="f" id="f-justif">
+      <div class="lbl">Justification d&eacute;taill&eacute;e <span class="req">*</span></div>
+      <textarea id="justif" rows="4" placeholder="D&eacute;crivez le contexte et la raison du recrutement..."></textarea>
+      <div class="errmsg">Ce champ est obligatoire</div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 4 -->
+<div class="card" id="s3">
+  <div class="ch"><div class="ch-n">04</div><div><div class="ch-t">Type de Contrat</div><div class="ch-s">CDI ou CDD selon le besoin</div></div></div>
+  <div class="cb">
+    <div class="f" id="f-type-contrat">
+      <div class="lbl">Type de contrat <span class="req">*</span></div>
+      <div class="og" id="og-type-contrat">
+        <div class="ob" id="tc-cdi"><span class="ri"></span> CDI &mdash; Dur&eacute;e ind&eacute;termin&eacute;e</div>
+        <div class="ob" id="tc-cdd"><span class="ri"></span> CDD / Contrat temporaire</div>
+      </div>
+      <div class="errmsg" id="e-type-contrat">Veuillez s&eacute;lectionner</div>
+    </div>
+
+    <div class="cp" id="p-cdi">
+      <hr class="div">
+      <div class="slbl">CDI &mdash; Contrat &agrave; Dur&eacute;e Ind&eacute;termin&eacute;e</div>
+      <div class="fg">
+        <div class="f" id="f-cdi-temps">
+          <div class="lbl">Temps de travail <span class="req">*</span></div>
+          <div class="og" id="og-cdi-temps">
+            <div class="ob" id="ct-plein"><span class="ri"></span> Temps plein</div>
+            <div class="ob" id="ct-partiel"><span class="ri"></span> Temps partiel</div>
+          </div>
+          <div class="errmsg" id="e-cdi-temps">Veuillez s&eacute;lectionner</div>
+        </div>
+        <div class="f">
+          <div class="lbl">Volume horaire</div>
+          <div class="og" id="og-cdi-h">
+            <div class="ob" id="ch-35"><span class="ri"></span> 35h</div>
+            <div class="ob" id="ch-273"><span class="ri"></span> 27,3h</div>
+            <div class="ob" id="ch-20"><span class="ri"></span> 20h</div>
+            <div class="ob" id="ch-1230"><span class="ri"></span> 12h30</div>
+          </div>
+        </div>
+        <div class="f">
+          <div class="lbl">P&eacute;riode d'essai</div>
+          <input type="text" id="cdi-essai" placeholder="ex. 2 mois (Employ&eacute;) / 4 mois (Cadre)">
+        </div>
+      </div>
+      <hr class="div">
+      <div class="f">
+        <div class="lbl">Justification</div>
+        <textarea id="cdi-justif" rows="3" placeholder="Pr&eacute;cisions suppl&eacute;mentaires..."></textarea>
+      </div>
+    </div>
+
+    <div class="cp" id="p-cdd">
+      <hr class="div">
+      <div class="slbl">CDD &mdash; Motif l&eacute;gal applicable</div>
+      <div class="f" id="f-motif-cdd">
+        <table class="mt">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Motif l&eacute;gal (Art. L.1242-2 C. trav.)</th>
+              <th>Conditions / dur&eacute;e max.</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="mr" id="mr-remp-absent">
+              <td><span class="mrad"></span></td>
+              <td><div class="mn">CDD &mdash; Remplacement</div><div class="md">Salari&eacute; absent ou suspendu</div></td>
+              <td class="mc">Dur&eacute;e = absence. Nom obligatoire.</td>
+            </tr>
+            <tr class="mr" id="mr-remp-depart">
+              <td><span class="mrad"></span></td>
+              <td><div class="mn">CDD &mdash; Remplacement (d&eacute;part)</div><div class="md">Salari&eacute; ayant quitt&eacute; d&eacute;finitivement l'entreprise</div></td>
+              <td class="mc">Max 24 mois.</td>
+            </tr>
+            <tr class="mr" id="mr-remp-partiel">
+              <td><span class="mrad"></span></td>
+              <td><div class="mn">CDD &mdash; Remplacement (temps partiel)</div><div class="md">Salari&eacute; pass&eacute; provisoirement &agrave; temps partiel</div></td>
+              <td class="mc">Dur&eacute;e = temps partiel.</td>
+            </tr>
+            <tr class="mr" id="mr-accroissement">
+              <td><span class="mrad"></span></td>
+              <td><div class="mn">CDD &mdash; Accroissement d'activit&eacute;</div><div class="md">Accroissement temporaire de l'activit&eacute;</div></td>
+              <td class="mc">Max 18 mois.</td>
+            </tr>
+            <tr class="mr" id="mr-apprentissage">
+              <td><span class="mrad"></span></td>
+              <td><div class="mn">Contrat d'apprentissage</div><div class="md">Formation alternance &mdash; dipl&ocirc;me ou titre professionnel</div></td>
+              <td class="mc">6 &agrave; 36 mois. 16-29 ans.</td>
+            </tr>
+            <tr class="mr" id="mr-pro">
+              <td><span class="mrad"></span></td>
+              <td><div class="mn">Contrat de professionnalisation</div><div class="md">Qualification reconnue en alternance</div></td>
+              <td class="mc">6 &agrave; 24 mois.</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="errmsg" id="e-motif-cdd">Veuillez s&eacute;lectionner un motif</div>
+      </div>
+      <hr class="div">
+      <div class="fg">
+        <div class="f" id="f-cdd-debut">
+          <div class="lbl">Date de d&eacute;but <span class="req">*</span></div>
+          <input type="date" id="cdd-debut">
+          <div class="errmsg">Ce champ est obligatoire</div>
+        </div>
+        <div class="f">
+          <div class="lbl">Date de fin pr&eacute;vue</div>
+          <input type="date" id="cdd-fin">
+          <div class="hint">Laisser vide si terme impr&eacute;cis</div>
+        </div>
+        <div class="f">
+          <div class="lbl">Dur&eacute;e totale</div>
+          <input type="text" id="cdd-duree" placeholder="ex. 3 mois">
+        </div>
+        <div class="f">
+          <div class="lbl">Renouvellement ?</div>
+          <div class="og" id="og-cdd-renouv">
+            <div class="ob" id="cr-oui"><span class="ri"></span> Oui</div>
+            <div class="ob" id="cr-non"><span class="ri"></span> Non</div>
+          </div>
+        </div>
+        <div class="f">
+          <div class="lbl">Terme impr&eacute;cis</div>
+          <input type="text" id="cdd-terme" placeholder="ex. Retour apr&egrave;s cong&eacute; maternit&eacute;">
+        </div>
+        <div class="f">
+          <div class="lbl">Volume horaire CDD</div>
+          <div class="og" id="og-cdd-h">
+            <div class="ob" id="cdh-35"><span class="ri"></span> 35h</div>
+            <div class="ob" id="cdh-273"><span class="ri"></span> 27,3h</div>
+            <div class="ob" id="cdh-20"><span class="ri"></span> 20h</div>
+            <div class="ob" id="cdh-1230"><span class="ri"></span> 12h30</div>
+          </div>
+        </div>
+        <div class="f">
+          <div class="lbl">Temps partiel ?</div>
+          <div class="og" id="og-cdd-partiel">
+            <div class="ob" id="cp-oui"><span class="ri"></span> Oui</div>
+            <div class="ob" id="cp-non"><span class="ri"></span> Non</div>
+          </div>
+        </div>
+      </div>
+      <div class="cp" id="p-remp-fields">
+        <hr class="div">
+        <div class="ibox"><b>Remplacement :</b> Informations obligatoires pour le contrat.</div>
+        <div class="fg">
+          <div class="f" id="f-salarie-remp">
+            <div class="lbl">Salari&eacute; remplac&eacute; <span class="req">*</span></div>
+            <input type="text" id="salarie-remp" placeholder="NOM Pr&eacute;nom">
+            <div class="errmsg">Obligatoire pour un remplacement</div>
+          </div>
+          <div class="f" id="f-motif-abs">
+            <div class="lbl">Motif de l'absence <span class="req">*</span></div>
+            <select id="motif-abs">
+              <option value="">-- S&eacute;lectionner --</option>
+              <option>Cong&eacute; maternit&eacute;</option>
+              <option>Cong&eacute; paternit&eacute;</option>
+              <option>Arr&ecirc;t maladie</option>
+              <option>Mi-temps th&eacute;rapeutique</option>
+              <option>Cong&eacute; parental</option>
+              <option>Suspension de contrat</option>
+              <option>Autre</option>
+            </select>
+            <div class="errmsg">Obligatoire pour un remplacement</div>
+          </div>
+        </div>
+      </div>
+      <hr class="div">
+      <div class="f">
+        <div class="lbl">Justification</div>
+        <textarea id="cdd-justif" rows="3" placeholder="Pr&eacute;cisions suppl&eacute;mentaires..."></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 5 -->
+<div class="card" id="s4">
+  <div class="ch"><div class="ch-n">05</div><div><div class="ch-t">Diffusion &amp; R&eacute;capitulatif</div><div class="ch-s">Finalisez et v&eacute;rifiez votre demande</div></div></div>
+  <div class="cb">
+    <div class="f" id="f-diffusion">
+      <div class="lbl">Canaux de diffusion <span class="req">*</span></div>
+      <div class="og" id="og-diffusion">
+        <div class="ob" id="di-interne"><span class="ci"></span> Recrutement interne</div>
+        <div class="ob" id="di-externe"><span class="ci"></span> Recrutement externe</div>
+      </div>
+      <div class="errmsg" id="e-diffusion">Veuillez s&eacute;lectionner au moins un canal</div>
+    </div>
+    <hr class="div">
+    <div class="slbl">Recapitulatif de la demande</div>
+    <div id="summary"></div>
+    <div class="wbox" style="margin-top:16px;font-size:13px;">
+      <b>Responsabilite :</b> Le Responsable Club atteste de l'absence effective et de l'impossibilite de remplacement interne.<br>
+      <span style="font-size:11px;font-style:italic;">Confidentiel - Usage interne RH exclusivement.</span>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="bnav">
+  <button class="btn btn-g" id="btn-prev" disabled onclick="doPrev()">&#8592; Precedent</button>
+  <span class="nlbl" id="nlbl">Etape 1 / 5</span>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-s" id="btn-print" style="display:none" onclick="window.print()">&#128424; Imprimer</button>
+    <button class="btn btn-p" id="btn-email" style="display:none" onclick="doEmail()">&#9993; Envoyer par email</button>
+    <button class="btn btn-p" id="btn-next" onclick="doNext()">Suivant &#8594;</button>
+  </div>
+</div>
+
+<script>
+// ── STATE ──────────────────────────────────
+var CUR = 0;
+var TOTAL = 5;
+
+var motifOuv     = '';
+var typeContrat  = '';
+var motifCDD     = '';
+var cdiTemps     = '';
+var cdiH         = '';
+var cddH         = '';
+var cddRenouv    = '';
+var cddPartiel   = '';
+var diffInterne  = false;
+var diffExterne  = false;
+
+// ── SET TODAY ──────────────────────────────
+document.getElementById('date-dem').valueAsDate = new Date();
+
+// ── HELPERS ────────────────────────────────
+function show(id, vis) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  if (vis) { el.classList.add('vis'); } else { el.classList.remove('vis'); }
+}
+function gv(id) {
+  var el = document.getElementById(id);
+  if (!el) return '';
+  return el.value ? el.value.trim() : '';
+}
+function fd(id) {
+  var v = gv(id);
+  if (!v) return '--';
+  var p = v.split('-');
+  if (p.length === 3) return p[2]+'/'+p[1]+'/'+p[0];
+  return v;
+}
+function showErr(fieldId, msgId) {
+  var f = document.getElementById(fieldId);
+  if (f) f.classList.add('herr');
+  if (msgId) {
+    var m = document.getElementById(msgId);
+    if (m) m.style.display = 'block';
+  }
+}
+function hideErr(fieldId, msgId) {
+  var f = document.getElementById(fieldId);
+  if (f) f.classList.remove('herr');
+  if (msgId) {
+    var m = document.getElementById(msgId);
+    if (m) m.style.display = 'none';
+  }
+}
+function reqField(fieldId) {
+  var el = document.getElementById(fieldId);
+  if (!el || !el.value.trim()) {
+    el.classList.add('err');
+    var wrap = document.getElementById('f-' + fieldId);
+    if (wrap) wrap.classList.add('herr');
+    return false;
+  }
+  return true;
+}
+function clearField(fieldId) {
+  var el = document.getElementById(fieldId);
+  if (el) el.classList.remove('err');
+  var wrap = document.getElementById('f-' + fieldId);
+  if (wrap) wrap.classList.remove('herr');
+}
+
+// Input change listeners
+var watchIds = ['responsable','poste-dem','regional','date-dem','intitule','club',
+                'centre-cout','nb-postes','date-prise','cdd-debut','salarie-remp'];
+for (var wi = 0; wi < watchIds.length; wi++) {
+  (function(id){
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('change', function(){ clearField(id); });
+    if (el) el.addEventListener('input',  function(){ clearField(id); });
+  })(watchIds[wi]);
+}
+var jel = document.getElementById('justif');
+if (jel) {
+  jel.addEventListener('input', function(){
+    jel.classList.remove('err');
+    var w = document.getElementById('f-justif');
+    if (w) w.classList.remove('herr');
+  });
+}
+var mabs = document.getElementById('motif-abs');
+if (mabs) {
+  mabs.addEventListener('change', function(){
+    mabs.classList.remove('err');
+    var w = document.getElementById('f-motif-abs');
+    if (w) w.classList.remove('herr');
+  });
+}
+
+// ── OPTION BUTTONS ─────────────────────────
+function setupRadio(groupId, ids, vals, onSelect) {
+  for (var i = 0; i < ids.length; i++) {
+    (function(btnId, val) {
+      var btn = document.getElementById(btnId);
+      if (!btn) return;
+      btn.addEventListener('click', function(){
+        // deselect all in group
+        for (var j = 0; j < ids.length; j++) {
+          var b = document.getElementById(ids[j]);
+          if (b) b.classList.remove('sel');
+        }
+        btn.classList.add('sel');
+        onSelect(val);
+      });
+    })(ids[i], vals[i]);
+  }
+}
+
+function setupCheckbox(btnId, onToggle) {
+  var btn = document.getElementById(btnId);
+  if (!btn) return;
+  btn.addEventListener('click', function(){
+    var isNowSelected = !btn.classList.contains('sel');
+    if (isNowSelected) { btn.classList.add('sel'); } else { btn.classList.remove('sel'); }
+    onToggle(isNowSelected);
+  });
+}
+
+// Motif ouverture
+setupRadio('og-motif-ouv',
+  ['mo-creation','mo-remplacement','mo-surcroit','mo-reorg'],
+  ['Creation de poste','Remplacement','Surcroit temporaire','Reorganisation interne'],
+  function(val) {
+    motifOuv = val;
+    hideErr('f-motif-ouv','e-motif-ouv');
+    show('p-remp-warn', val === 'Remplacement');
+  }
+);
+
+// Type contrat
+setupRadio('og-type-contrat',
+  ['tc-cdi','tc-cdd'],
+  ['CDI','CDD'],
+  function(val) {
+    typeContrat = val;
+    hideErr('f-type-contrat','e-type-contrat');
+    show('p-cdi', val === 'CDI');
+    show('p-cdd', val === 'CDD');
+  }
+);
+
+// CDI temps
+setupRadio('og-cdi-temps',
+  ['ct-plein','ct-partiel'],
+  ['Temps plein','Temps partiel'],
+  function(val) {
+    cdiTemps = val;
+    hideErr('f-cdi-temps','e-cdi-temps');
+  }
+);
+
+// CDI horaire
+setupRadio('og-cdi-h',
+  ['ch-35','ch-273','ch-20','ch-1230'],
+  ['35h','27.3h','20h','12h30'],
+  function(val) { cdiH = val; }
+);
+
+// CDD renouvellement
+setupRadio('og-cdd-renouv',
+  ['cr-oui','cr-non'],
+  ['Oui','Non'],
+  function(val) { cddRenouv = val; }
+);
+
+// CDD horaire
+setupRadio('og-cdd-h',
+  ['cdh-35','cdh-273','cdh-20','cdh-1230'],
+  ['35h','27.3h','20h','12h30'],
+  function(val) { cddH = val; }
+);
+
+// CDD temps partiel
+setupRadio('og-cdd-partiel',
+  ['cp-oui','cp-non'],
+  ['Oui','Non'],
+  function(val) { cddPartiel = val; }
+);
+
+// Diffusion (checkboxes)
+setupCheckbox('di-interne', function(on){ diffInterne = on; checkDiff(); });
+setupCheckbox('di-externe', function(on){ diffExterne = on; checkDiff(); });
+function checkDiff() {
+  if (diffInterne || diffExterne) hideErr('f-diffusion','e-diffusion');
+}
+
+// Motif CDD rows
+var motifRows = [
+  {id:'mr-remp-absent',   val:'remplacement-absent',   lbl:'CDD - Remplacement'},
+  {id:'mr-remp-depart',   val:'remplacement-depart',   lbl:'CDD - Remplacement (depart)'},
+  {id:'mr-remp-partiel',  val:'remplacement-partiel',  lbl:'CDD - Remplacement (temps partiel)'},
+  {id:'mr-accroissement', val:'accroissement',          lbl:'CDD - Accroissement d activite'},
+  {id:'mr-apprentissage', val:'apprentissage',          lbl:'Contrat d apprentissage'},
+  {id:'mr-pro',           val:'professionnalisation',   lbl:'Contrat de professionnalisation'}
+];
+for (var mi = 0; mi < motifRows.length; mi++) {
+  (function(row){
+    var el = document.getElementById(row.id);
+    if (!el) return;
+    el.addEventListener('click', function(){
+      for (var mj = 0; mj < motifRows.length; mj++) {
+        var r = document.getElementById(motifRows[mj].id);
+        if (r) r.classList.remove('sel');
+      }
+      el.classList.add('sel');
+      motifCDD = row.val;
+      hideErr('f-motif-cdd','e-motif-cdd');
+      var isRemp = (motifCDD.indexOf('remplacement') === 0);
+      show('p-remp-fields', isRemp);
+    });
+  })(motifRows[mi]);
+}
+
+// Tab clicks (go back only)
+for (var ti = 0; ti < TOTAL; ti++) {
+  (function(idx){
+    var tab = document.getElementById('tab' + idx);
+    if (!tab) return;
+    tab.addEventListener('click', function(){
+      if (idx < CUR) goTo(idx);
+    });
+  })(ti);
+}
+
+// ── NAVIGATION ──────────────────────────────
+function doNext() {
+  if (validate(CUR)) {
+    CUR++;
+    goTo(CUR);
+  }
+}
+function doPrev() {
+  if (CUR > 0) { CUR--; goTo(CUR); }
+}
+
+function goTo(s) {
+  CUR = s;
+  for (var i = 0; i < TOTAL; i++) {
+    var card = document.getElementById('s' + i);
+    if (card) {
+      if (i === s) { card.classList.add('act'); } else { card.classList.remove('act'); }
+    }
+    var tab = document.getElementById('tab' + i);
+    if (tab) {
+      tab.classList.remove('act','done');
+      if (i === s)      tab.classList.add('act');
+      else if (i < s)   tab.classList.add('done');
+    }
+  }
+  var prev = document.getElementById('btn-prev');
+  if (prev) prev.disabled = (s === 0);
+
+  var last = (s === TOTAL - 1);
+  var btnNext  = document.getElementById('btn-next');
+  var btnPrint = document.getElementById('btn-print');
+  var btnEmail = document.getElementById('btn-email');
+  if (btnNext)  btnNext.style.display  = last ? 'none' : '';
+  if (btnPrint) btnPrint.style.display = last ? ''     : 'none';
+  if (btnEmail) btnEmail.style.display = last ? ''     : 'none';
+
+  var lbl = document.getElementById('nlbl');
+  if (lbl) lbl.textContent = 'Etape ' + (s + 1) + ' / ' + TOTAL;
+
+  if (last) buildSummary();
+  window.scrollTo(0, 0);
+}
+
+// ── VALIDATION ──────────────────────────────
+function validate(s) {
+  var ok = true;
+
+  if (s === 0) {
+    if (!reqField('responsable'))  ok = false;
+    if (!reqField('poste-dem'))    ok = false;
+    if (!reqField('regional'))     ok = false;
+    if (!reqField('date-dem'))     ok = false;
+  }
+
+  if (s === 1) {
+    if (!reqField('intitule'))     ok = false;
+    if (!reqField('club'))         ok = false;
+    if (!reqField('centre-cout'))  ok = false;
+    if (!reqField('nb-postes'))    ok = false;
+    if (!reqField('date-prise'))   ok = false;
+  }
+
+  if (s === 2) {
+    if (!motifOuv) {
+      showErr('f-motif-ouv', 'e-motif-ouv');
+      ok = false;
+    }
+    var jf = document.getElementById('justif');
+    if (!jf || !jf.value.trim()) {
+      if (jf) jf.classList.add('err');
+      showErr('f-justif', null);
+      ok = false;
+    }
+  }
+
+  if (s === 3) {
+    if (!typeContrat) {
+      showErr('f-type-contrat', 'e-type-contrat');
+      ok = false;
+    }
+    if (typeContrat === 'CDI') {
+      if (!cdiTemps) {
+        showErr('f-cdi-temps', 'e-cdi-temps');
+        ok = false;
+      }
+    }
+    if (typeContrat === 'CDD') {
+      if (!motifCDD) {
+        showErr('f-motif-cdd', 'e-motif-cdd');
+        ok = false;
+      }
+      if (!reqField('cdd-debut')) ok = false;
+      if (motifCDD && motifCDD.indexOf('remplacement') === 0) {
+        if (!reqField('salarie-remp')) ok = false;
+        var mab = document.getElementById('motif-abs');
+        if (!mab || !mab.value) {
+          if (mab) mab.classList.add('err');
+          showErr('f-motif-abs', null);
+          ok = false;
+        }
+      }
+    }
+  }
+
+  if (s === 4) {
+    if (!diffInterne && !diffExterne) {
+      showErr('f-diffusion', 'e-diffusion');
+      ok = false;
+    }
+  }
+
+  return ok;
+}
+
+// ── SUMMARY ─────────────────────────────────
+function buildSummary() {
+  var motifCDDLabel = '--';
+  for (var i = 0; i < motifRows.length; i++) {
+    if (motifRows[i].val === motifCDD) {
+      motifCDDLabel = motifRows[i].lbl;
+      break;
+    }
+  }
+
+  var diff = [];
+  if (diffInterne) diff.push('Recrutement interne');
+  if (diffExterne) diff.push('Recrutement externe');
+
+  var h = '<div class="sgrid">';
+
+  h += '<div class="ssec">1. Informations generales</div>';
+  h += row('Responsable demandeur', gv('responsable'));
+  h += row('Poste du demandeur',    gv('poste-dem'));
+  h += row('Responsable Regional',  gv('regional'));
+  h += row('Date de la demande',    fd('date-dem'));
+
+  h += '<div class="ssec">2. Poste a pourvoir</div>';
+  h += row('Intitule du poste', '<b>'+(gv('intitule')||'--')+'</b>');
+  h += row('Club / Site',       gv('club'));
+  h += row('Centre de cout',    gv('centre-cout'));
+  h += row('Service',           gv('service') || '--');
+  h += row('Nombre de postes',  gv('nb-postes'));
+  h += row('Date prise de poste', fd('date-prise'));
+  h += row('Deadline',          fd('deadline'));
+
+  h += '<div class="ssec">3. Motif d ouverture</div>';
+  h += row('Nature', '<span class="tag">'+(motifOuv||'--')+'</span>');
+  h += row('Justification', gv('justif'));
+
+  if (typeContrat === 'CDI') {
+    h += '<div class="ssec">4. Contrat - CDI</div>';
+    h += row('Temps de travail', cdiTemps || '--');
+    h += row('Volume horaire',   cdiH     || '--');
+    h += row('Periode d essai',  gv('cdi-essai') || '--');
+  } else if (typeContrat === 'CDD') {
+    h += '<div class="ssec">4. Contrat - CDD</div>';
+    h += row('Motif legal', '<span class="tag">'+motifCDDLabel+'</span>');
+    h += row('Date debut',    fd('cdd-debut'));
+    h += row('Date fin',      fd('cdd-fin'));
+    h += row('Duree totale',  gv('cdd-duree') || '--');
+    h += row('Renouvellement', cddRenouv || '--');
+    h += row('Terme imprecis', gv('cdd-terme') || '--');
+    h += row('Volume horaire', cddH      || '--');
+    h += row('Temps partiel',  cddPartiel|| '--');
+    if (motifCDD && motifCDD.indexOf('remplacement') === 0) {
+      h += row('Salarie remplace', gv('salarie-remp'));
+      h += row('Motif absence',    gv('motif-abs'));
+    }
+  }
+
+  h += '<div class="ssec">5. Diffusion</div>';
+  h += row('Canaux', diff.length > 0 ? diff.join(', ') : '--');
+  h += '</div>';
+
+  var el = document.getElementById('summary');
+  if (el) el.innerHTML = h;
+}
+
+function row(k, v) {
+  return '<div class="sk">'+k+'</div><div class="sv">'+(v||'--')+'</div>';
+}
+
+// ── EMAIL ────────────────────────────────────
+var HR_EMAIL = 'adp@basic-fit.fr';
+
+function doEmail() {
+  var motifCDDLabel = '--';
+  for (var i = 0; i < motifRows.length; i++) {
+    if (motifRows[i].val === motifCDD) { motifCDDLabel = motifRows[i].lbl; break; }
+  }
+  var diff = [];
+  if (diffInterne) diff.push('Recrutement interne');
+  if (diffExterne) diff.push('Recrutement externe');
+
+  var subject = 'Demande Ouverture de Poste - ' + (gv('intitule') || 'N/A') + ' - ' + (gv('club') || 'N/A');
+
+  var body = '';
+  body += '=== DEMANDE D OUVERTURE DE POSTE ===\r\n';
+  body += 'Confidentiel - Usage interne RH exclusivement\r\n';
+  body += '\r\n';
+
+  body += '--- 1. INFORMATIONS GENERALES ---\r\n';
+  body += 'Responsable demandeur : ' + (gv('responsable') || '--') + '\r\n';
+  body += 'Poste du demandeur    : ' + (gv('poste-dem')   || '--') + '\r\n';
+  body += 'Responsable Regional  : ' + (gv('regional')    || '--') + '\r\n';
+  body += 'Date de la demande    : ' + (fd('date-dem'))            + '\r\n';
+  body += '\r\n';
+
+  body += '--- 2. POSTE A POURVOIR ---\r\n';
+  body += 'Intitule du poste     : ' + (gv('intitule')     || '--') + '\r\n';
+  body += 'Club / Site           : ' + (gv('club')         || '--') + '\r\n';
+  body += 'Centre de cout        : ' + (gv('centre-cout')  || '--') + '\r\n';
+  body += 'Service               : ' + (gv('service')      || '--') + '\r\n';
+  body += 'Nombre de postes      : ' + (gv('nb-postes')    || '--') + '\r\n';
+  body += 'Date prise de poste   : ' + fd('date-prise')             + '\r\n';
+  body += 'Deadline recrutement  : ' + fd('deadline')               + '\r\n';
+  body += '\r\n';
+
+  body += '--- 3. MOTIF D OUVERTURE ---\r\n';
+  body += 'Nature                : ' + (motifOuv || '--') + '\r\n';
+  body += 'Justification         : ' + (gv('justif') || '--') + '\r\n';
+  body += '\r\n';
+
+  body += '--- 4. TYPE DE CONTRAT ---\r\n';
+  body += 'Type                  : ' + (typeContrat || '--') + '\r\n';
+
+  if (typeContrat === 'CDI') {
+    body += 'Temps de travail      : ' + (cdiTemps || '--') + '\r\n';
+    body += 'Volume horaire        : ' + (cdiH     || '--') + '\r\n';
+    body += 'Periode d essai       : ' + (gv('cdi-essai') || '--') + '\r\n';
+    if (gv('cdi-justif')) body += 'Justification CDI     : ' + gv('cdi-justif') + '\r\n';
+  }
+
+  if (typeContrat === 'CDD') {
+    body += 'Motif legal           : ' + motifCDDLabel + '\r\n';
+    body += 'Date debut            : ' + fd('cdd-debut') + '\r\n';
+    body += 'Date fin prevue       : ' + fd('cdd-fin') + '\r\n';
+    body += 'Duree totale          : ' + (gv('cdd-duree')  || '--') + '\r\n';
+    body += 'Renouvellement        : ' + (cddRenouv        || '--') + '\r\n';
+    body += 'Terme imprecis        : ' + (gv('cdd-terme')  || '--') + '\r\n';
+    body += 'Volume horaire        : ' + (cddH             || '--') + '\r\n';
+    body += 'Temps partiel         : ' + (cddPartiel       || '--') + '\r\n';
+    if (motifCDD && motifCDD.indexOf('remplacement') === 0) {
+      body += 'Salarie remplace      : ' + (gv('salarie-remp') || '--') + '\r\n';
+      body += 'Motif absence         : ' + (gv('motif-abs')    || '--') + '\r\n';
+    }
+    if (gv('cdd-justif')) body += 'Justification CDD     : ' + gv('cdd-justif') + '\r\n';
+  }
+
+  body += '\r\n';
+  body += '--- 5. DIFFUSION ---\r\n';
+  body += 'Canaux                : ' + (diff.join(', ') || '--') + '\r\n';
+  body += '\r\n';
+  body += '---\r\n';
+  body += 'Ce formulaire est confidentiel - Usage interne RH exclusivement.\r\n';
+
+  var mailto = 'mailto:' + HR_EMAIL
+    + '?subject=' + encodeURIComponent(subject)
+    + '&body='    + encodeURIComponent(body);
+
+  window.location.href = mailto;
+}
+</script>
+</body>
+</html>
