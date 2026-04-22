@@ -443,7 +443,12 @@ select{appearance:none;-webkit-appearance:none;background-image:url("data:image/
     <hr class="div">
     <div class="slbl">Recapitulatif de la demande</div>
     <div id="summary"></div>
-    <div class="wbox" style="margin-top:16px;font-size:13px;">
+    <div class="ibox" style="margin-top:16px;font-size:13px;">
+      <b>&#128204; Comment envoyer votre demande :</b><br><br>
+      <b>Etape 1 —</b> Cliquez sur <b>&#128424; Imprimer</b> &rarr; choisissez <b>"Enregistrer en PDF"</b> dans les options d'impression de votre navigateur.<br><br>
+      <b>Etape 2 —</b> Cliquez sur <b>&#9993; Envoyer par email</b> &rarr; Outlook s'ouvre avec les informations pre-remplies &rarr; <b>joignez le PDF</b> en piece jointe &rarr; envoyez.
+    </div>
+    <div class="wbox" style="font-size:13px;">
       <b>Responsabilite :</b> Le Responsable Club atteste de l'absence effective et de l'impossibilite de remplacement interne.<br>
       <span style="font-size:11px;font-style:italic;">Confidentiel - Usage interne RH exclusivement.</span>
     </div>
@@ -456,7 +461,7 @@ select{appearance:none;-webkit-appearance:none;background-image:url("data:image/
   <button class="btn btn-g" id="btn-prev" disabled onclick="doPrev()">&#8592; Precedent</button>
   <span class="nlbl" id="nlbl">Etape 1 / 5</span>
   <div style="display:flex;gap:8px;">
-    <button class="btn btn-s" id="btn-print" style="display:none" onclick="window.print()">&#128424; Imprimer</button>
+    <button class="btn btn-s" id="btn-print" style="display:none" onclick="window.print()">&#128424; Imprimer / PDF</button>
     <button class="btn btn-p" id="btn-email" style="display:none" onclick="doEmail()">&#9993; Envoyer par email</button>
     <button class="btn btn-p" id="btn-next" onclick="doNext()">Suivant &#8594;</button>
   </div>
