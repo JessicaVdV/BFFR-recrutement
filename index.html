@@ -116,7 +116,20 @@ select{appearance:none;-webkit-appearance:none;background-image:url("data:image/
 .btn-g:disabled,.btn-p:disabled{opacity:.35;cursor:not-allowed;}
 .nlbl{font-size:13px;color:var(--tl);font-weight:600;}
 
-/* summary */
+/* roster widget */
+.roster{width:100%;border-collapse:collapse;border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;margin-top:6px;}
+.roster th{background:var(--or);color:#fff;font-size:11px;font-weight:700;padding:7px 8px;text-align:center;text-transform:uppercase;letter-spacing:.3px;}
+.roster td{padding:6px 8px;border-bottom:1px solid var(--bd);border-right:1px solid var(--bd);text-align:center;vertical-align:middle;}
+.roster tr:last-child td{border-bottom:none;}
+.roster td:first-child{text-align:left;font-size:12px;font-weight:700;color:var(--tm);background:var(--bg);width:90px;}
+.roster td:last-child{border-right:none;}
+.day-cb{width:16px;height:16px;accent-color:var(--or);cursor:pointer;}
+.shift-sel{border:1.5px solid var(--bd);border-radius:3px;padding:4px 6px;font-size:12px;font-family:Arial,sans-serif;color:var(--tx);background:var(--w);width:100%;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='6'%3E%3Cpath d='M0 0l4 6 4-6z' fill='%23888'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 6px center;padding-right:20px;}
+.shift-sel:disabled{background-color:var(--bg);color:var(--tl);border-color:var(--bd);cursor:not-allowed;}
+.shift-sel:focus{outline:2px solid var(--or);outline-offset:-1px;}
+.roster tr.day-active td{background:var(--or-l);}
+
+
 .sgrid{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;}
 .ssec{grid-column:1/-1;background:var(--or);color:#fff;font-weight:700;font-size:12.5px;padding:7px 12px;text-transform:uppercase;letter-spacing:.3px;}
 .sk{background:var(--bg);padding:8px 12px;font-size:11.5px;font-weight:700;color:var(--tl);border-bottom:1px solid var(--bd);text-transform:uppercase;}
@@ -209,10 +222,6 @@ select{appearance:none;-webkit-appearance:none;background-image:url("data:image/
         <input type="text" id="centre-cout" placeholder="ex. CC-2201">
         <div class="errmsg">Ce champ est obligatoire</div>
       </div>
-      <div class="f">
-        <div class="lbl">Service / D&eacute;partement</div>
-        <input type="text" id="service" placeholder="ex. Cours collectifs">
-      </div>
       <div class="f" id="f-nb-postes">
         <div class="lbl">Nombre de postes <span class="req">*</span></div>
         <input type="number" id="nb-postes" value="1" min="1" max="99">
@@ -222,10 +231,6 @@ select{appearance:none;-webkit-appearance:none;background-image:url("data:image/
         <div class="lbl">Date de prise de poste <span class="req">*</span></div>
         <input type="date" id="date-prise">
         <div class="errmsg">Ce champ est obligatoire</div>
-      </div>
-      <div class="f">
-        <div class="lbl">Deadline recrutement</div>
-        <input type="date" id="deadline">
       </div>
     </div>
   </div>
@@ -261,6 +266,7 @@ select{appearance:none;-webkit-appearance:none;background-image:url("data:image/
 <div class="card" id="s3">
   <div class="ch"><div class="ch-n">04</div><div><div class="ch-t">Type de Contrat</div><div class="ch-s">CDI ou CDD selon le besoin</div></div></div>
   <div class="cb">
+
     <div class="f" id="f-type-contrat">
       <div class="lbl">Type de contrat <span class="req">*</span></div>
       <div class="og" id="og-type-contrat">
@@ -270,6 +276,7 @@ select{appearance:none;-webkit-appearance:none;background-image:url("data:image/
       <div class="errmsg" id="e-type-contrat">Veuillez s&eacute;lectionner</div>
     </div>
 
+    <!-- CDI -->
     <div class="cp" id="p-cdi">
       <hr class="div">
       <div class="slbl">CDI &mdash; Contrat &agrave; Dur&eacute;e Ind&eacute;termin&eacute;e</div>
@@ -295,6 +302,21 @@ select{appearance:none;-webkit-appearance:none;background-image:url("data:image/
           <div class="lbl">P&eacute;riode d'essai</div>
           <input type="text" id="cdi-essai" placeholder="ex. 2 mois (Employ&eacute;) / 4 mois (Cadre)">
         </div>
+        <div class="f full">
+          <div class="lbl">Uurrooster / Horaire hebdomadaire</div>
+          <table class="roster" id="roster-cdi">
+            <thead><tr><th>Jour</th><th>Travaille</th><th>D&eacute;but</th><th>Fin</th></tr></thead>
+            <tbody>
+              <tr id="cdi-row-lun"><td>Lundi</td><td><input type="checkbox" class="day-cb" onchange="toggleDay('cdi','lun')"></td><td><input type="time" id="cdi-lun-start" disabled class="shift-sel" style="padding:4px 6px;"></td><td><input type="time" id="cdi-lun-end" disabled class="shift-sel" style="padding:4px 6px;"></td></tr>
+              <tr id="cdi-row-mar"><td>Mardi</td><td><input type="checkbox" class="day-cb" onchange="toggleDay('cdi','mar')"></td><td><input type="time" id="cdi-mar-start" disabled class="shift-sel" style="padding:4px 6px;"></td><td><input type="time" id="cdi-mar-end" disabled class="shift-sel" style="padding:4px 6px;"></td></tr>
+              <tr id="cdi-row-mer"><td>Mercredi</td><td><input type="checkbox" class="day-cb" onchange="toggleDay('cdi','mer')"></td><td><input type="time" id="cdi-mer-start" disabled class="shift-sel" style="padding:4px 6px;"></td><td><input type="time" id="cdi-mer-end" disabled class="shift-sel" style="padding:4px 6px;"></td></tr>
+              <tr id="cdi-row-jeu"><td>Jeudi</td><td><input type="checkbox" class="day-cb" onchange="toggleDay('cdi','jeu')"></td><td><input type="time" id="cdi-jeu-start" disabled class="shift-sel" style="padding:4px 6px;"></td><td><input type="time" id="cdi-jeu-end" disabled class="shift-sel" style="padding:4px 6px;"></td></tr>
+              <tr id="cdi-row-ven"><td>Vendredi</td><td><input type="checkbox" class="day-cb" onchange="toggleDay('cdi','ven')"></td><td><input type="time" id="cdi-ven-start" disabled class="shift-sel" style="padding:4px 6px;"></td><td><input type="time" id="cdi-ven-end" disabled class="shift-sel" style="padding:4px 6px;"></td></tr>
+              <tr id="cdi-row-sam"><td>Samedi</td><td><input type="checkbox" class="day-cb" onchange="toggleDay('cdi','sam')"></td><td><input type="time" id="cdi-sam-start" disabled class="shift-sel" style="padding:4px 6px;"></td><td><input type="time" id="cdi-sam-end" disabled class="shift-sel" style="padding:4px 6px;"></td></tr>
+              <tr id="cdi-row-dim"><td>Dimanche</td><td><input type="checkbox" class="day-cb" onchange="toggleDay('cdi','dim')"></td><td><input type="time" id="cdi-dim-start" disabled class="shift-sel" style="padding:4px 6px;"></td><td><input type="time" id="cdi-dim-end" disabled class="shift-sel" style="padding:4px 6px;"></td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
       <hr class="div">
       <div class="f">
@@ -303,6 +325,7 @@ select{appearance:none;-webkit-appearance:none;background-image:url("data:image/
       </div>
     </div>
 
+    <!-- CDD -->
     <div class="cp" id="p-cdd">
       <hr class="div">
       <div class="slbl">CDD &mdash; Motif l&eacute;gal applicable</div>
@@ -319,32 +342,12 @@ select{appearance:none;-webkit-appearance:none;background-image:url("data:image/
             <tr class="mr" id="mr-remp-absent">
               <td><span class="mrad"></span></td>
               <td><div class="mn">CDD &mdash; Remplacement</div><div class="md">Salari&eacute; absent ou suspendu</div></td>
-              <td class="mc">Dur&eacute;e = absence. Nom obligatoire.</td>
-            </tr>
-            <tr class="mr" id="mr-remp-depart">
-              <td><span class="mrad"></span></td>
-              <td><div class="mn">CDD &mdash; Remplacement (d&eacute;part)</div><div class="md">Salari&eacute; ayant quitt&eacute; d&eacute;finitivement l'entreprise</div></td>
-              <td class="mc">Max 24 mois.</td>
-            </tr>
-            <tr class="mr" id="mr-remp-partiel">
-              <td><span class="mrad"></span></td>
-              <td><div class="mn">CDD &mdash; Remplacement (temps partiel)</div><div class="md">Salari&eacute; pass&eacute; provisoirement &agrave; temps partiel</div></td>
-              <td class="mc">Dur&eacute;e = temps partiel.</td>
+              <td class="mc">Dur&eacute;e max 18 mois.</td>
             </tr>
             <tr class="mr" id="mr-accroissement">
               <td><span class="mrad"></span></td>
               <td><div class="mn">CDD &mdash; Accroissement d'activit&eacute;</div><div class="md">Accroissement temporaire de l'activit&eacute;</div></td>
               <td class="mc">Max 18 mois.</td>
-            </tr>
-            <tr class="mr" id="mr-apprentissage">
-              <td><span class="mrad"></span></td>
-              <td><div class="mn">Contrat d'apprentissage</div><div class="md">Formation alternance &mdash; dipl&ocirc;me ou titre professionnel</div></td>
-              <td class="mc">6 &agrave; 36 mois. 16-29 ans.</td>
-            </tr>
-            <tr class="mr" id="mr-pro">
-              <td><span class="mrad"></span></td>
-              <td><div class="mn">Contrat de professionnalisation</div><div class="md">Qualification reconnue en alternance</div></td>
-              <td class="mc">6 &agrave; 24 mois.</td>
             </tr>
           </tbody>
         </table>
@@ -374,10 +377,6 @@ select{appearance:none;-webkit-appearance:none;background-image:url("data:image/
           </div>
         </div>
         <div class="f">
-          <div class="lbl">Terme impr&eacute;cis</div>
-          <input type="text" id="cdd-terme" placeholder="ex. Retour apr&egrave;s cong&eacute; maternit&eacute;">
-        </div>
-        <div class="f">
           <div class="lbl">Volume horaire CDD</div>
           <div class="og" id="og-cdd-h">
             <div class="ob" id="cdh-35"><span class="ri"></span> 35h</div>
@@ -393,7 +392,23 @@ select{appearance:none;-webkit-appearance:none;background-image:url("data:image/
             <div class="ob" id="cp-non"><span class="ri"></span> Non</div>
           </div>
         </div>
+        <div class="f full">
+          <div class="lbl">Uurrooster / Horaire hebdomadaire</div>
+          <table class="roster" id="roster-cdd">
+            <thead><tr><th>Jour</th><th>Travaille</th><th>D&eacute;but</th><th>Fin</th></tr></thead>
+            <tbody>
+              <tr id="cdd-row-lun"><td>Lundi</td><td><input type="checkbox" class="day-cb" onchange="toggleDay('cdd','lun')"></td><td><input type="time" id="cdd-lun-start" disabled class="shift-sel" style="padding:4px 6px;"></td><td><input type="time" id="cdd-lun-end" disabled class="shift-sel" style="padding:4px 6px;"></td></tr>
+              <tr id="cdd-row-mar"><td>Mardi</td><td><input type="checkbox" class="day-cb" onchange="toggleDay('cdd','mar')"></td><td><input type="time" id="cdd-mar-start" disabled class="shift-sel" style="padding:4px 6px;"></td><td><input type="time" id="cdd-mar-end" disabled class="shift-sel" style="padding:4px 6px;"></td></tr>
+              <tr id="cdd-row-mer"><td>Mercredi</td><td><input type="checkbox" class="day-cb" onchange="toggleDay('cdd','mer')"></td><td><input type="time" id="cdd-mer-start" disabled class="shift-sel" style="padding:4px 6px;"></td><td><input type="time" id="cdd-mer-end" disabled class="shift-sel" style="padding:4px 6px;"></td></tr>
+              <tr id="cdd-row-jeu"><td>Jeudi</td><td><input type="checkbox" class="day-cb" onchange="toggleDay('cdd','jeu')"></td><td><input type="time" id="cdd-jeu-start" disabled class="shift-sel" style="padding:4px 6px;"></td><td><input type="time" id="cdd-jeu-end" disabled class="shift-sel" style="padding:4px 6px;"></td></tr>
+              <tr id="cdd-row-ven"><td>Vendredi</td><td><input type="checkbox" class="day-cb" onchange="toggleDay('cdd','ven')"></td><td><input type="time" id="cdd-ven-start" disabled class="shift-sel" style="padding:4px 6px;"></td><td><input type="time" id="cdd-ven-end" disabled class="shift-sel" style="padding:4px 6px;"></td></tr>
+              <tr id="cdd-row-sam"><td>Samedi</td><td><input type="checkbox" class="day-cb" onchange="toggleDay('cdd','sam')"></td><td><input type="time" id="cdd-sam-start" disabled class="shift-sel" style="padding:4px 6px;"></td><td><input type="time" id="cdd-sam-end" disabled class="shift-sel" style="padding:4px 6px;"></td></tr>
+              <tr id="cdd-row-dim"><td>Dimanche</td><td><input type="checkbox" class="day-cb" onchange="toggleDay('cdd','dim')"></td><td><input type="time" id="cdd-dim-start" disabled class="shift-sel" style="padding:4px 6px;"></td><td><input type="time" id="cdd-dim-end" disabled class="shift-sel" style="padding:4px 6px;"></td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
+
       <div class="cp" id="p-remp-fields">
         <hr class="div">
         <div class="ibox"><b>Remplacement :</b> Informations obligatoires pour le contrat.</div>
@@ -409,6 +424,7 @@ select{appearance:none;-webkit-appearance:none;background-image:url("data:image/
               <option value="">-- S&eacute;lectionner --</option>
               <option>Cong&eacute; maternit&eacute;</option>
               <option>Cong&eacute; paternit&eacute;</option>
+              <option>Cong&eacute; pay&eacute;</option>
               <option>Arr&ecirc;t maladie</option>
               <option>Mi-temps th&eacute;rapeutique</option>
               <option>Cong&eacute; parental</option>
@@ -419,12 +435,14 @@ select{appearance:none;-webkit-appearance:none;background-image:url("data:image/
           </div>
         </div>
       </div>
+
       <hr class="div">
       <div class="f">
         <div class="lbl">Justification</div>
         <textarea id="cdd-justif" rows="3" placeholder="Pr&eacute;cisions suppl&eacute;mentaires..."></textarea>
       </div>
     </div>
+
   </div>
 </div>
 
@@ -523,7 +541,7 @@ function hideErr(fieldId, msgId) {
 function reqField(fieldId) {
   var el = document.getElementById(fieldId);
   if (!el || !el.value.trim()) {
-    el.classList.add('err');
+    if (el) el.classList.add('err');
     var wrap = document.getElementById('f-' + fieldId);
     if (wrap) wrap.classList.add('herr');
     return false;
@@ -664,11 +682,7 @@ function checkDiff() {
 // Motif CDD rows
 var motifRows = [
   {id:'mr-remp-absent',   val:'remplacement-absent',   lbl:'CDD - Remplacement'},
-  {id:'mr-remp-depart',   val:'remplacement-depart',   lbl:'CDD - Remplacement (depart)'},
-  {id:'mr-remp-partiel',  val:'remplacement-partiel',  lbl:'CDD - Remplacement (temps partiel)'},
-  {id:'mr-accroissement', val:'accroissement',          lbl:'CDD - Accroissement d activite'},
-  {id:'mr-apprentissage', val:'apprentissage',          lbl:'Contrat d apprentissage'},
-  {id:'mr-pro',           val:'professionnalisation',   lbl:'Contrat de professionnalisation'}
+  {id:'mr-accroissement', val:'accroissement',          lbl:'CDD - Accroissement d activite'}
 ];
 for (var mi = 0; mi < motifRows.length; mi++) {
   (function(row){
@@ -839,10 +853,8 @@ function buildSummary() {
   h += row('Intitule du poste', '<b>'+(gv('intitule')||'--')+'</b>');
   h += row('Club / Site',       gv('club'));
   h += row('Centre de cout',    gv('centre-cout'));
-  h += row('Service',           gv('service') || '--');
   h += row('Nombre de postes',  gv('nb-postes'));
   h += row('Date prise de poste', fd('date-prise'));
-  h += row('Deadline',          fd('deadline'));
 
   h += '<div class="ssec">3. Motif d ouverture</div>';
   h += row('Nature', '<span class="tag">'+(motifOuv||'--')+'</span>');
@@ -852,6 +864,7 @@ function buildSummary() {
     h += '<div class="ssec">4. Contrat - CDI</div>';
     h += row('Temps de travail', cdiTemps || '--');
     h += row('Volume horaire',   cdiH     || '--');
+    h += row('Horaire specifique', getRosterHTML('cdi'));
     h += row('Periode d essai',  gv('cdi-essai') || '--');
   } else if (typeContrat === 'CDD') {
     h += '<div class="ssec">4. Contrat - CDD</div>';
@@ -862,6 +875,7 @@ function buildSummary() {
     h += row('Renouvellement', cddRenouv || '--');
     h += row('Terme imprecis', gv('cdd-terme') || '--');
     h += row('Volume horaire', cddH      || '--');
+    h += row('Horaire specifique', getRosterHTML('cdd'));
     h += row('Temps partiel',  cddPartiel|| '--');
     if (motifCDD && motifCDD.indexOf('remplacement') === 0) {
       h += row('Salarie remplace', gv('salarie-remp'));
@@ -875,6 +889,55 @@ function buildSummary() {
 
   var el = document.getElementById('summary');
   if (el) el.innerHTML = h;
+}
+
+// ── ROSTER ───────────────────────────────────
+var DAYS = ['lun','mar','mer','jeu','ven','sam','dim'];
+var DAY_LABELS = {lun:'Lundi',mar:'Mardi',mer:'Mercredi',jeu:'Jeudi',ven:'Vendredi',sam:'Samedi',dim:'Dimanche'};
+
+function toggleDay(contract, day) {
+  var cb    = document.querySelector('#' + contract + '-row-' + day + ' input[type=checkbox]');
+  var start = document.getElementById(contract + '-' + day + '-start');
+  var end   = document.getElementById(contract + '-' + day + '-end');
+  var row   = document.getElementById(contract + '-row-' + day);
+  var on = cb && cb.checked;
+  if (start) start.disabled = !on;
+  if (end)   end.disabled   = !on;
+  if (row) { if (on) row.classList.add('day-active'); else row.classList.remove('day-active'); }
+  if (!on && start) start.value = '';
+  if (!on && end)   end.value   = '';
+}
+
+function getRosterText(contract) {
+  var lines = [];
+  for (var i = 0; i < DAYS.length; i++) {
+    var day = DAYS[i];
+    var cb = document.querySelector('#' + contract + '-row-' + day + ' input[type=checkbox]');
+    if (cb && cb.checked) {
+      var start = document.getElementById(contract + '-' + day + '-start');
+      var end   = document.getElementById(contract + '-' + day + '-end');
+      var s = (start && start.value) ? start.value : '--';
+      var e = (end   && end.value)   ? end.value   : '--';
+      lines.push(DAY_LABELS[day] + ': ' + s + ' - ' + e);
+    }
+  }
+  return lines.length > 0 ? lines.join(' | ') : '--';
+}
+
+function getRosterHTML(contract) {
+  var lines = [];
+  for (var i = 0; i < DAYS.length; i++) {
+    var day = DAYS[i];
+    var cb = document.querySelector('#' + contract + '-row-' + day + ' input[type=checkbox]');
+    if (cb && cb.checked) {
+      var start = document.getElementById(contract + '-' + day + '-start');
+      var end   = document.getElementById(contract + '-' + day + '-end');
+      var s = (start && start.value) ? start.value : '--';
+      var e = (end   && end.value)   ? end.value   : '--';
+      lines.push('<b>' + DAY_LABELS[day] + '</b>: ' + s + ' &ndash; ' + e);
+    }
+  }
+  return lines.length > 0 ? lines.join('&nbsp;&nbsp;|&nbsp;&nbsp;') : '--';
 }
 
 function row(k, v) {
@@ -911,10 +974,8 @@ function doEmail() {
   body += 'Intitule du poste     : ' + (gv('intitule')     || '--') + '\r\n';
   body += 'Club / Site           : ' + (gv('club')         || '--') + '\r\n';
   body += 'Centre de cout        : ' + (gv('centre-cout')  || '--') + '\r\n';
-  body += 'Service               : ' + (gv('service')      || '--') + '\r\n';
   body += 'Nombre de postes      : ' + (gv('nb-postes')    || '--') + '\r\n';
   body += 'Date prise de poste   : ' + fd('date-prise')             + '\r\n';
-  body += 'Deadline recrutement  : ' + fd('deadline')               + '\r\n';
   body += '\r\n';
 
   body += '--- 3. MOTIF D OUVERTURE ---\r\n';
@@ -928,6 +989,7 @@ function doEmail() {
   if (typeContrat === 'CDI') {
     body += 'Temps de travail      : ' + (cdiTemps || '--') + '\r\n';
     body += 'Volume horaire        : ' + (cdiH     || '--') + '\r\n';
+    body += 'Horaire specifique    : ' + getRosterText('cdi') + '\r\n';
     body += 'Periode d essai       : ' + (gv('cdi-essai') || '--') + '\r\n';
     if (gv('cdi-justif')) body += 'Justification CDI     : ' + gv('cdi-justif') + '\r\n';
   }
@@ -940,6 +1002,7 @@ function doEmail() {
     body += 'Renouvellement        : ' + (cddRenouv        || '--') + '\r\n';
     body += 'Terme imprecis        : ' + (gv('cdd-terme')  || '--') + '\r\n';
     body += 'Volume horaire        : ' + (cddH             || '--') + '\r\n';
+    body += 'Horaire specifique    : ' + getRosterText('cdd') + '\r\n';
     body += 'Temps partiel         : ' + (cddPartiel       || '--') + '\r\n';
     if (motifCDD && motifCDD.indexOf('remplacement') === 0) {
       body += 'Salarie remplace      : ' + (gv('salarie-remp') || '--') + '\r\n';
